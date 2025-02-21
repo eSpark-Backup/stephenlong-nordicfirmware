@@ -12,6 +12,7 @@ project(Application)
 target_sources(app PRIVATE
 	src/main.c
 	src/model_handler.c
+	src/voltage_sensor.c
     src/dht11.c)
 target_include_directories(app PRIVATE include)
 

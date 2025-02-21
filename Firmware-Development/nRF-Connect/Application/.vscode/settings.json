@@ -1,5 +1,14 @@
 {
     "files.associations": {
-        "model_handler.h": "c"
+        "model_handler.h": "c",
+        "voltage_sensor.h": "c",
+        "nrfx_saadc.h": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     }
 }

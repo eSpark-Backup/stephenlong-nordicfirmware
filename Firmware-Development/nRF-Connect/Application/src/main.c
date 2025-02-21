@@ -11,6 +11,8 @@
 #include <bluetooth/mesh/models.h>
 #include <bluetooth/mesh/dk_prov.h>
 #include <dk_buttons_and_leds.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/logging/log.h>
 #include "model_handler.h"
 
 static void bt_ready(int err)
@@ -60,6 +62,6 @@ int main(void)
 	if (err) {
 		printk("Bluetooth init failed (err %d)\n", err);
 	}
-
+    
 	return 0;
 }

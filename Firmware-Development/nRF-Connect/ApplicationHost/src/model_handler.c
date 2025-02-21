@@ -106,7 +106,7 @@ static void sensor_cli_data_cb(struct bt_mesh_sensor_cli *cli,
 		printk("Humidity is %s\n", bt_mesh_sensor_ch_str(value));
 	}
     else if (sensor->id == bt_mesh_sensor_present_input_voltage.id) {
-		printk("Voltage is %smV\n", bt_mesh_sensor_ch_str(value));
+		printk("Voltage is %sV\n", bt_mesh_sensor_ch_str(value));
 	}
 }
 

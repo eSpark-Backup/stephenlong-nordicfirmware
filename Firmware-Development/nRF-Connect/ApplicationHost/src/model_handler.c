@@ -99,6 +99,12 @@ static void sensor_cli_data_cb(struct bt_mesh_sensor_cli *cli,
 	} else if (sensor->id == bt_mesh_sensor_people_count.id) {
 		printk("People count is %s\n", bt_mesh_sensor_ch_str(value));
 	}
+    else if (sensor->id == bt_mesh_sensor_precise_present_amb_temp.id) {
+		printk("Custom Temp is %s\n", bt_mesh_sensor_ch_str(value));
+	}
+    else if (sensor->id == bt_mesh_sensor_present_amb_rel_humidity.id) {
+		printk("Humidity is %s\n", bt_mesh_sensor_ch_str(value));
+	}
 }
 
 static void sensor_cli_series_entry_cb(

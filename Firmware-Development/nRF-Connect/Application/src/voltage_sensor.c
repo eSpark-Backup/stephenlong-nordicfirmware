@@ -72,6 +72,6 @@ int voltage_sensor_read(float *voltage)
         return err;
     }
 
-    *voltage = value_mv * VOLTAGE_DIVIDER_RATIO;
+    *voltage = (value_mv * VOLTAGE_DIVIDER_RATIO) / 1000.f;
     return 0;
 }

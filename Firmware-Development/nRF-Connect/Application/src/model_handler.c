@@ -69,7 +69,7 @@ static int voltage_get(struct bt_mesh_sensor_srv *srv,
         return err;
     }
 
-    printk("Getting Voltage: %.2fmV\n", voltage);
+    printk("Getting Voltage: %.2fV\n", voltage);
     return 0;
 }
 
@@ -84,7 +84,7 @@ static struct bt_mesh_sensor humidity_sensor = {
 };
 
 static struct bt_mesh_sensor voltage_sensor = {
-    .type = &bt_mesh_sensor_avg_input_voltage,
+    .type = &bt_mesh_sensor_present_input_voltage,
     .get = voltage_get,
 };
 

@@ -137,15 +137,15 @@ static void sensor_cli_data_cb(struct bt_mesh_sensor_cli *cli,
 		printk("People count is %s\n", bt_mesh_sensor_ch_str(value));
 	}
     else if (sensor->id == bt_mesh_sensor_precise_present_amb_temp.id) {
-        LOG_INF("Ambient Temperature is %s\n", bt_mesh_sensor_ch_str(value));
+        // LOG_INF("Ambient Temperature is %s\n", bt_mesh_sensor_ch_str(value));
         add_sensor_value_to_json("temperature", value);
 	}
     else if (sensor->id == bt_mesh_sensor_present_amb_rel_humidity.id) {
-        LOG_INF("Ambient Humidity is %s\n", bt_mesh_sensor_ch_str(value));
+        // LOG_INF("Ambient Humidity is %s\n", bt_mesh_sensor_ch_str(value));
         add_sensor_value_to_json("humidity", value);
 	}
     else if (sensor->id == bt_mesh_sensor_present_input_voltage.id) {
-        LOG_INF("Voltage is %sV\n", bt_mesh_sensor_ch_str(value));
+        // LOG_INF("Voltage is %sV\n", bt_mesh_sensor_ch_str(value));
         add_sensor_value_to_json("voltage", value);
 	}
 

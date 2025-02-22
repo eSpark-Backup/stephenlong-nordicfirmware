@@ -7,14 +7,48 @@
 #include <zephyr/bluetooth/bluetooth.h>
 #include <bluetooth/mesh/models.h>
 #include <dk_buttons_and_leds.h>
+#include <cJSON.h>
+#include <stdio.h>
 #include "model_handler.h"
+#include "comm.h"
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(sensor_logger, LOG_LEVEL_INF);
 
 #define GET_DATA_INTERVAL 60000
 #define GET_DATA_INTERVAL_QUICK 3000
 #define MOTION_TIMEOUT K_SECONDS(60)
+#define COMBINE_INTERVAL K_MSEC(500)
 
 static bool is_occupied;
 static struct k_work_delayable motion_timeout_work;
+static struct k_work_delayable send_data_work;
+
+static cJSON *sensor_data = NULL;
+
+static void send_json_over_uart(void)
+{
+    if (sensor_data && cJSON_GetArraySize(sensor_data) > 0) 
+    {
+        char *json_str = cJSON_PrintUnformatted(sensor_data);
+        if (json_str) 
+        {
+            comm_print(json_str);
+            cJSON_free(json_str);
+        }
+        cJSON_Delete(sensor_data);
+        sensor_data = cJSON_CreateObject();
+    }
+}
+
+static void add_sensor_value_to_json(const char *key, const struct bt_mesh_sensor_value *value)
+{
+    if (value && key) {
+        char value_str[32];
+        snprintf(value_str, sizeof(value_str), "%s", bt_mesh_sensor_ch_str(value));
+        cJSON_AddStringToObject(sensor_data, key, value_str);
+    }
+}
 
 static void motion_timeout(struct k_work *work)
 {
@@ -28,6 +62,9 @@ static void sensor_cli_data_cb(struct bt_mesh_sensor_cli *cli,
 			       const struct bt_mesh_sensor_value *value)
 {
 	enum bt_mesh_sensor_value_status status;
+    if (!sensor_data) {
+        sensor_data = cJSON_CreateObject();
+    }
 
 	if (sensor->id == bt_mesh_sensor_present_dev_op_temp.id) {
 		printk("Chip temperature: %s\n", bt_mesh_sensor_ch_str(value));
@@ -100,14 +137,22 @@ static void sensor_cli_data_cb(struct bt_mesh_sensor_cli *cli,
 		printk("People count is %s\n", bt_mesh_sensor_ch_str(value));
 	}
     else if (sensor->id == bt_mesh_sensor_precise_present_amb_temp.id) {
-		printk("Custom Temp is %s\n", bt_mesh_sensor_ch_str(value));
+        LOG_INF("Ambient Temperature is %s\n", bt_mesh_sensor_ch_str(value));
+        add_sensor_value_to_json("temperature", value);
 	}
     else if (sensor->id == bt_mesh_sensor_present_amb_rel_humidity.id) {
-		printk("Humidity is %s\n", bt_mesh_sensor_ch_str(value));
+        LOG_INF("Ambient Humidity is %s\n", bt_mesh_sensor_ch_str(value));
+        add_sensor_value_to_json("humidity", value);
 	}
     else if (sensor->id == bt_mesh_sensor_present_input_voltage.id) {
-		printk("Voltage is %sV\n", bt_mesh_sensor_ch_str(value));
+        LOG_INF("Voltage is %sV\n", bt_mesh_sensor_ch_str(value));
+        add_sensor_value_to_json("voltage", value);
 	}
+
+    if (k_work_delayable_is_pending(&send_data_work)) {
+        k_work_cancel_delayable(&send_data_work);
+    }
+    k_work_reschedule(&send_data_work, COMBINE_INTERVAL);
 }
 
 static void sensor_cli_series_entry_cb(
@@ -365,11 +410,19 @@ static const struct bt_mesh_comp comp = {
 	.elem_count = ARRAY_SIZE(elements),
 };
 
+static void send_data_task(struct k_work *work)
+{
+    send_json_over_uart();
+}
+
 const struct bt_mesh_comp *model_handler_init(void)
 {
+    printk("cJSON version %s\n", cJSON_Version());
+    comm_init();
 	k_work_init_delayable(&attention_blink_work, attention_blink);
 	k_work_init_delayable(&get_data_work, get_data);
 	k_work_init_delayable(&motion_timeout_work, motion_timeout);
+    k_work_init_delayable(&send_data_work, send_data_task);
 
 	dk_button_handler_add(&button_handler);
 	k_work_schedule(&get_data_work, K_MSEC(GET_DATA_INTERVAL));

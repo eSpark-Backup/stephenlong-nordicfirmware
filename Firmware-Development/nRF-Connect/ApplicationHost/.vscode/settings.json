@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "model_handler.h": "c",
+        "comm.h": "c"
+    }
+}

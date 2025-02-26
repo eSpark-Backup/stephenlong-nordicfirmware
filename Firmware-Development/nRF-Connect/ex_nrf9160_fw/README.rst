@@ -1,3 +1,5 @@
+*NOTE: thingy91/nrf9160/ns needs to be selected from build configuration to build the firmware.*
+
 .. _aws_iot:
 
 nRF9160: AWS IoT

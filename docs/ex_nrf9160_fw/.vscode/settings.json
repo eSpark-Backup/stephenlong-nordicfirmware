@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "kernel.h": "c",
-        "nrf_modem_lib.h": "c",
-        "aws.h": "c",
-        "datetime.h": "c",
-        "json_support.h": "c"
-    }
-}

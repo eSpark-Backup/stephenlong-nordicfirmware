@@ -1,3 +1,4 @@
+#pragma once
 
 extern struct k_sem lte_connected;
 extern bool psm_activated;

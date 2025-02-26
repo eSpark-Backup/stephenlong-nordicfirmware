@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+#pragma once
 
 #define AWS_IOT_CLIENT_PRIVATE_KEY \
 	"-----BEGIN RSA PRIVATE KEY-----\n" \

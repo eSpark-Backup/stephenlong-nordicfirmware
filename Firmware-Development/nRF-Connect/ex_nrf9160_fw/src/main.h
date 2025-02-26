@@ -1,3 +1,4 @@
+#pragma once
 
 extern struct k_work_delayable shadow_update_work;
 extern struct k_work_delayable connect_work;
@@ -11,6 +12,7 @@ extern int gps_interval;
 extern int aws_interval;
 extern double last_reported_latitude;
 extern double last_reported_longitude;
+extern float last_reported_voltage, last_reported_temperature, last_reported_humidity;
 
 void connect_work_fn(struct k_work *work);
 void shadow_update_work_fn(struct k_work *work);

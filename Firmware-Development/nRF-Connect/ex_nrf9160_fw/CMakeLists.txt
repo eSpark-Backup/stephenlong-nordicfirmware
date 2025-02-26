@@ -7,10 +7,10 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-project(aws_iot)
+project(ex_nrf9160_fw)
 
 # NORDIC SDK APP START
-target_sources(app PRIVATE src/main.c src/lte.c src/dfu.c src/aws.c src/datetime.c src/json_support.c src/gps.c)
+target_sources(app PRIVATE src/main.c src/lte.c src/dfu.c src/aws.c src/datetime.c src/json_support.c src/gps.c src/comm.c)
 # NORDIC SDK APP END
 
 zephyr_include_directories(src)

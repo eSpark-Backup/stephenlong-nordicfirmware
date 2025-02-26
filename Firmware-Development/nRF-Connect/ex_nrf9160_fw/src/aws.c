@@ -1,6 +1,7 @@
 #include <zephyr/kernel.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <net/aws_iot.h>
 #include <modem/lte_lc.h>
 #include <modem/nrf_modem_lib.h>
@@ -24,6 +25,24 @@
 
 #define MY_CUSTOM_TOPIC_1  "my-custom-topic/example"
 #define MY_CUSTOM_TOPIC_2  "my-custom-topic/example2"
+
+void add_sensor_data_to_report(cJSON *reported_obj)
+{
+    if (!isnan(last_reported_temperature))
+    {
+        json_add_number(reported_obj, "temperature", last_reported_temperature);
+    }
+
+    if (!isnan(last_reported_humidity))
+    {
+        json_add_number(reported_obj, "humidity", last_reported_humidity);
+    }
+
+    if (!isnan(last_reported_voltage))
+    {
+        json_add_number(reported_obj, "voltage", last_reported_voltage);
+    }
+}
 
 int app_topics_subscribe(void)
 {
@@ -111,6 +130,7 @@ int shadow_update(bool version_number_include)
 		err += json_add_number(reported_obj, "longitude", last_reported_longitude);
 	}
 	
+    add_sensor_data_to_report(reported_obj);
 
 	err += json_add_number(reported_obj, "batv", bat_voltage);
 	err += json_add_number(reported_obj, "ts", message_ts);

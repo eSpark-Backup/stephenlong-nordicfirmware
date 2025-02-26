@@ -8,6 +8,7 @@
 #include <zephyr/sys/printk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <nrf_modem_gnss.h>
 #if defined(CONFIG_NRF_MODEM_LIB)
 #include <modem/lte_lc.h>
@@ -23,12 +24,13 @@
 #include <cJSON_os.h>
 #include <hw_id.h>
 
+#include "json_support.h"
 #include "datetime.h"
 #include "lte.h"
 #include "dfu.h"
 #include "gps.h"
 #include "aws.h"
-#include "json_support.h"
+#include "comm.h"
 #include "main.h"
 
 #define DEBUG_ON
@@ -51,6 +53,7 @@ int gps_interval = DEFAULT_GPS_FIX_INTERVAL;
 int aws_interval = DEFAULT_AWS_INTERVAL;
 double last_reported_latitude;
 double last_reported_longitude;
+float last_reported_voltage = NAN, last_reported_temperature = NAN, last_reported_humidity = NAN;
 static bool gnss_is_running = false;
 static int gnss_not_enough_window_time_cnt = 0;
 static int last_set_gps_interval = DEFAULT_GPS_FIX_INTERVAL;
@@ -161,6 +164,7 @@ int main(void)
 	// Initiate connection to AWS IoT MQTT 
 	k_work_schedule(&connect_work, K_NO_WAIT);
 
+    comm_init();
 }
 
 void connect_work_fn(struct k_work *work)
